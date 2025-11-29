@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using PixelCollector.Networking.Client;
+using PixelCollector.Networking.Server;
 using SocketIOClient;
 using UnityEngine;
 
@@ -18,9 +18,9 @@ namespace PixelCollector
     private SocketIOUnity socket;
     
     /// <summary>
-    /// 명령어 핸들러 딕셔너리입니다. 키는 명령어 문자열이며, 값은 인자를 받아 실행하는 Action입니다.
+    /// 명령어 처리를 담당하는 핸들러입니다.
     /// </summary>
-    private readonly Dictionary<string, Action<object>> commandHandlers = new();
+    private readonly SocketCommandHandler commandHandler = new();
     
     private void Awake()
     { 
@@ -43,7 +43,7 @@ namespace PixelCollector
       socket.OnDisconnected += OnSocketDisconnected;
       
       // 명령어 수신 이벤트 핸들러 등록
-      socket.On("command", OnCommandReceived);
+      socket.On("command", commandHandler.HandleCommand);
       
       socket.Connect();
     }
@@ -64,13 +64,7 @@ namespace PixelCollector
     /// <param name="handler">명령어 처리 함수</param>
     public void RegisterCommand(string command, Action<object> handler)
     {
-      if (string.IsNullOrEmpty(command))
-      {
-        Debug.LogWarning("[ServerManagement] 빈 명령어는 등록할 수 없습니다.");
-        return;
-      }
-      
-      commandHandlers[command] = handler;
+      commandHandler.RegisterCommand(command, handler);
     }
     
     /// <summary>
@@ -79,47 +73,7 @@ namespace PixelCollector
     /// <param name="command">제거할 명령어 문자열</param>
     public void UnregisterCommand(string command)
     {
-      commandHandlers.Remove(command);
-    }
-    
-    /// <summary>
-    /// 소켓 서버로부터 명령어를 수신했을 때 호출됩니다.
-    /// 명령어 데이터 형식: {cmd: string, args: {}}
-    /// </summary>
-    private void OnCommandReceived(SocketIOResponse response)
-    {
-      try
-      {
-        var data = response.GetValue<JObject>();
-        
-        if (data == null)
-        {
-          Debug.LogWarning("[ServerManagement] 수신한 명령어 데이터가 null입니다.");
-          return;
-        }
-        
-        var cmd = data["cmd"]?.ToString();
-        var args = data["args"]?.ToObject<object>();
-        
-        if (string.IsNullOrEmpty(cmd))
-        {
-          Debug.LogWarning("[ServerManagement] 명령어(cmd)가 비어있습니다.");
-          return;
-        }
-        
-        if (commandHandlers.TryGetValue(cmd, out var handler))
-        {
-          handler.Invoke(args);
-        }
-        else
-        {
-          Debug.LogWarning($"[ServerManagement] 등록되지 않은 명령어입니다: {cmd}");
-        }
-      }
-      catch (Exception e)
-      {
-        Debug.LogError($"[ServerManagement] 명령어 처리 중 오류 발생: {e.Message}");
-      }
+      commandHandler.UnregisterCommand(command);
     }
     
     /// <summary>
