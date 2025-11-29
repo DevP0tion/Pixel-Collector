@@ -54,7 +54,7 @@ namespace PixelCollector
     private void RegisterDefaultCommands()
     {
       // 상태 요청 명령어
-      RegisterCommand("get_status", _ => SendServerStatus());
+      RegisterCommand("get_status", args => SendServerStatus());
     }
     
     /// <summary>
@@ -109,7 +109,7 @@ namespace PixelCollector
         
         if (commandHandlers.TryGetValue(cmd, out var handler))
         {
-          handler?.Invoke(args);
+          handler.Invoke(args);
         }
         else
         {
