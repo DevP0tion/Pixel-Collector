@@ -4,6 +4,7 @@ using PixelCollector.Networking.Client;
 using PixelCollector.Networking.Server;
 using SocketIOClient;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace PixelCollector
 {
@@ -12,8 +13,8 @@ namespace PixelCollector
   /// </summary>
   public class ServerManagement : MonoBehaviour
   {
-    [SerializeField] private NetClientManager netClientManager;
-    [SerializeField] private string socketServerUrl = "http://localhost:7777";
+    [SerializeField] private NetServerManager serverManager;
+    [SerializeField] private ushort socketPort = 7777;
     
     private SocketIOUnity socket;
     
@@ -26,7 +27,7 @@ namespace PixelCollector
     { 
       InitializeSocket();
       RegisterDefaultCommands();
-      netClientManager.StartServer();
+      serverManager.StartServer();
     }
     
     /// <summary>
@@ -34,7 +35,7 @@ namespace PixelCollector
     /// </summary>
     private void InitializeSocket()
     {
-      socket = new SocketIOUnity(socketServerUrl, new SocketIOOptions
+      socket = new SocketIOUnity($"http://localhot:{socketPort}", new SocketIOOptions
       {
         Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
       });
