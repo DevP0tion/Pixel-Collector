@@ -175,7 +175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverManager: {fileID: 1153686726}
-  port: 7777
+  socketPort: 7777
 --- !u!1001 &8277009234248731525
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -184,10 +184,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1454174632851637535, guid: b84c0983e900b264ab681ee3e44eb23a, type: 3}
-      propertyPath: onlineScene
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2888943002074366125, guid: b84c0983e900b264ab681ee3e44eb23a, type: 3}
       propertyPath: m_Name
       value: NetServerManager

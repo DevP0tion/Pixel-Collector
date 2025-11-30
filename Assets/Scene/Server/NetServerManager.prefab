@@ -46,7 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   port: 1968
   DualMode: 1
-  NoDelay: 1
+  NoDelay: 0
   Interval: 10
   Timeout: 10000
   RecvBufferSize: 7361536

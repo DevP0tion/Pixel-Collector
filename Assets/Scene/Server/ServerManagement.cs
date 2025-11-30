@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using PixelCollector.Networking.Client;
 using PixelCollector.Networking.Server;
@@ -27,7 +28,7 @@ namespace PixelCollector
     { 
       InitializeSocket();
       RegisterDefaultCommands();
-      serverManager.StartServer();
+      // serverManager.StartServer();
     }
     
     /// <summary>
@@ -35,9 +36,13 @@ namespace PixelCollector
     /// </summary>
     private void InitializeSocket()
     {
-      socket = new SocketIOUnity($"http://localhot:{socketPort}", new SocketIOOptions
+      socket = new SocketIOUnity($"http://localhost:{socketPort}", new SocketIOOptions
       {
         Transport = SocketIOClient.Transport.TransportProtocol.WebSocket,
+        Query = new Dictionary<string, string>
+        {
+          ["clientType"] = "unity"
+        } 
       });
       
       socket.OnConnected += OnSocketConnected;
@@ -47,6 +52,7 @@ namespace PixelCollector
       socket.On("command", commandHandler.HandleCommand);
       
       socket.Connect();
+      Debug.Log(socket.Connected);
     }
     
     /// <summary>
