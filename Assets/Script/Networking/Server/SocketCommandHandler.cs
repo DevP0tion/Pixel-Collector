@@ -27,7 +27,7 @@ namespace PixelCollector.Networking.Server
     /// <summary>
     /// 명령어 핸들러 딕셔너리입니다. 키는 명령어 문자열이며, 값은 소켓과 인자를 받아 응답을 반환하는 함수입니다.
     /// </summary>
-    public readonly Dictionary<string, CommandHandler> CommandHandlers = new();
+    private readonly Dictionary<string, CommandHandler> commandHandlers = new();
     
     /// <summary>
     /// 소켓 인스턴스를 설정합니다.
@@ -51,7 +51,7 @@ namespace PixelCollector.Networking.Server
         return;
       }
       
-      CommandHandlers[command] = handler;
+      commandHandlers[command] = handler;
     }
     
     /// <summary>
@@ -65,7 +65,7 @@ namespace PixelCollector.Networking.Server
         return;
       }
       
-      CommandHandlers.Remove(command);
+      commandHandlers.Remove(command);
     }
     
     /// <summary>
@@ -80,7 +80,7 @@ namespace PixelCollector.Networking.Server
         return false;
       }
       
-      return CommandHandlers.ContainsKey(command);
+      return commandHandlers.ContainsKey(command);
     }
     
     /// <summary>
@@ -126,7 +126,7 @@ namespace PixelCollector.Networking.Server
         return;
       }
       
-      if (CommandHandlers.TryGetValue(command, out var handler))
+      if (commandHandlers.TryGetValue(command, out var handler))
       {
         var response = handler.Invoke(socket, args);
         if (response != null)
@@ -161,7 +161,7 @@ namespace PixelCollector.Networking.Server
     /// </summary>
     public void ClearCommands()
     {
-      CommandHandlers.Clear();
+      commandHandlers.Clear();
     }
     
     /// <summary>
@@ -169,7 +169,7 @@ namespace PixelCollector.Networking.Server
     /// </summary>
     public IEnumerable<string> GetRegisteredCommands()
     {
-      return CommandHandlers.Keys;
+      return commandHandlers.Keys;
     }
   }
 }
