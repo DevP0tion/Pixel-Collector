@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using PixelCollector.Networking.Client;
 using PixelCollector.Networking.Server;
@@ -11,6 +12,7 @@ namespace PixelCollector
 {
   /// <summary>
   /// 소켓 서버와 통신하여 명령을 수신하고 서버 상태를 전송하는 클래스입니다.
+  /// Pixel-Server의 명령어 인터페이스에 맞춰 구현되었습니다.
   /// </summary>
   public class ServerManagement : MonoBehaviour
   {
@@ -45,11 +47,14 @@ namespace PixelCollector
         } 
       });
       
+      // 소켓 인스턴스를 명령어 핸들러에 설정
+      commandHandler.SetSocket(socket);
+      
       socket.OnConnected += OnSocketConnected;
       socket.OnDisconnected += OnSocketDisconnected;
       
-      // 명령어 수신 이벤트 핸들러 등록
-      socket.On("command", commandHandler.HandleCommand);
+      // Pixel-Server의 이벤트 이름에 맞춰 "unity:command" 이벤트 수신
+      socket.On("unity:command", commandHandler.HandleCommand);
       
       socket.Connect();
       Debug.Log(socket.Connected);
@@ -57,19 +62,60 @@ namespace PixelCollector
     
     /// <summary>
     /// 기본 명령어들을 등록합니다.
+    /// Pixel-Server의 명령어 인터페이스에 맞춰 구현합니다.
     /// </summary>
     private void RegisterDefaultCommands()
     {
       // 상태 요청 명령어
-      RegisterCommand("get_status", args => SendServerStatus());
+      RegisterCommand("status", (_, _) =>
+      {
+        return CommandResponse.Success("Status retrieved", new
+        {
+          online = true,
+          serverTime = DateTimeOffset.UtcNow.ToString("o"),
+          uptime = Time.realtimeSinceStartup
+        });
+      });
+      
+      // Ping 명령어
+      RegisterCommand("ping", (_, _) =>
+      {
+        return CommandResponse.Success("pong", new
+        {
+          timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+        });
+      });
+      
+      // 도움말 명령어
+      RegisterCommand("help", (_, _) =>
+      {
+        var commands = commandHandler.GetRegisteredCommands().ToList();
+        var helpMessage = "사용 가능한 명령어:\n" + string.Join("\n", commands.Select(c => $"  {c}"));
+        return CommandResponse.Success(helpMessage, new { commands });
+      });
+      
+      // 서버 정보 명령어
+      RegisterCommand("server:info", (_, _) =>
+      {
+        return CommandResponse.Success("서버 정보", new
+        {
+          name = "Pixel Collector Unity Server",
+          version = Application.version,
+          unityVersion = Application.unityVersion,
+          platform = Application.platform.ToString(),
+          uptime = Time.realtimeSinceStartup,
+          systemMemory = SystemInfo.systemMemorySize,
+          graphicsDevice = SystemInfo.graphicsDeviceName
+        });
+      });
     }
     
     /// <summary>
     /// 새로운 명령어 핸들러를 등록합니다.
     /// </summary>
     /// <param name="command">명령어 문자열</param>
-    /// <param name="handler">명령어 처리 함수</param>
-    public void RegisterCommand(string command, Action<object> handler)
+    /// <param name="handler">명령어 처리 함수 (소켓과 인자를 받아 응답을 반환)</param>
+    public void RegisterCommand(string command, CommandHandler handler)
     {
       commandHandler.RegisterCommand(command, handler);
     }
@@ -101,6 +147,57 @@ namespace PixelCollector
       };
       
       socket.Emit("server_status", status);
+    }
+    
+    /// <summary>
+    /// 명령어 응답을 전송합니다.
+    /// </summary>
+    /// <param name="response">응답 데이터</param>
+    public void SendCommandResponse(CommandResponse response)
+    {
+      commandHandler.SendResponse(response);
+    }
+    
+    /// <summary>
+    /// 게임 로그를 웹 콘솔로 전송합니다.
+    /// </summary>
+    /// <param name="message">로그 메시지</param>
+    /// <param name="level">로그 레벨 (info, warning, error)</param>
+    public void SendGameLog(string message, string level = "info")
+    {
+      if (socket == null || !socket.Connected)
+      {
+        Debug.LogWarning("[ServerManagement] 소켓이 연결되어 있지 않습니다.");
+        return;
+      }
+      
+      socket.Emit("game:log", new
+      {
+        message,
+        level,
+        timestamp = DateTimeOffset.UtcNow.ToString("o")
+      });
+    }
+    
+    /// <summary>
+    /// 게임 이벤트를 웹 콘솔로 전송합니다.
+    /// </summary>
+    /// <param name="eventType">이벤트 타입</param>
+    /// <param name="data">이벤트 데이터</param>
+    public void SendGameEvent(string eventType, object data)
+    {
+      if (socket == null || !socket.Connected)
+      {
+        Debug.LogWarning("[ServerManagement] 소켓이 연결되어 있지 않습니다.");
+        return;
+      }
+      
+      socket.Emit("game:event", new
+      {
+        type = eventType,
+        data,
+        timestamp = DateTimeOffset.UtcNow.ToString("o")
+      });
     }
     
     /// <summary>
