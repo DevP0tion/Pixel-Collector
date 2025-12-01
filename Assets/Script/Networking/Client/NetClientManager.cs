@@ -1,12 +1,17 @@
+using System;
+using kcp2k;
 using Mirror;
-using Mirror.Authenticators;
+using UnityEngine;
 
 namespace PixelCollector.Networking.Client
 {
   public class NetClientManager : NetworkManager
   {
-    public override void Awake()
+    public override void Start()
     {
+      base.Start();
+
+      StartClient(new Uri("kcp://localhost:10224"));
     }
   }
 }

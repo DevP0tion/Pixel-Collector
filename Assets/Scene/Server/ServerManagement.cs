@@ -6,6 +6,7 @@ using PixelCollector.Networking.Server;
 using SocketIOClient;
 using SocketIOClient.Transport;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace PixelCollector
 {
@@ -28,9 +29,12 @@ namespace PixelCollector
     private void Awake()
     {
       DontDestroyOnLoad(gameObject);
-      InitializeSocket();
       RegisterDefaultCommands();
-      serverManager.StartServer();
+    }
+
+    private void Start()
+    {
+      InitializeSocket((_, _) => serverManager.StartServer());
     }
 
     private void OnDestroy()
@@ -47,7 +51,7 @@ namespace PixelCollector
     /// <summary>
     ///   소켓 연결을 초기화하고 이벤트 핸들러를 등록합니다.
     /// </summary>
-    private void InitializeSocket()
+    private void InitializeSocket(EventHandler afterConnect = null)
     {
       socket = new SocketIOUnity($"http://localhost:{socketPort}", new SocketIOOptions
       {
@@ -67,6 +71,8 @@ namespace PixelCollector
       // Pixel-Server의 이벤트 이름에 맞춰 "unity:command" 이벤트 수신
       socket.On("unity:command", commandHandler.HandleCommand);
 
+      socket.OnConnected += afterConnect;
+
       socket.Connect();
     }
 
@@ -80,7 +86,7 @@ namespace PixelCollector
       RegisterCommand("status", "서버 상태를 출력합니다.", (_, _) =>
       {
         var serverTime = DateTimeOffset.UtcNow.ToString("o");
-        
+
         return CommandResponse.Success(
           "Status \n" +
           "online: true \n" +
@@ -99,7 +105,7 @@ namespace PixelCollector
       RegisterCommand("ping", "핑 테스트", (_, _) =>
       {
         var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        
+
         return CommandResponse.Success($"pong {timeStamp}", new JObject
         {
           ["timestamp"] = timeStamp
@@ -113,11 +119,8 @@ namespace PixelCollector
         var helpMessage = "사용 가능한 명령어:\n" + string.Join("\n", commands.Select(c => $"  {c}"));
         var result = new JArray();
 
-        foreach (var cmd in commands)
-        {
-          result.Add(cmd);
-        }
-        
+        foreach (var cmd in commands) result.Add(cmd);
+
         return CommandResponse.Success(helpMessage, result);
       });
 
@@ -126,7 +129,7 @@ namespace PixelCollector
       {
         return CommandResponse.Success(
           "Server Info \n" +
-          $"name: Pixel Collector Unity Server \n" +
+          "name: Pixel Collector Unity Server \n" +
           $"version: {Application.version} \n" +
           $"unityVersion: {Application.unityVersion} \n" +
           $"platform: {Application.platform} \n" +
@@ -143,6 +146,47 @@ namespace PixelCollector
             ["systemMemory"] = SystemInfo.systemMemorySize,
             ["graphicsDevice"] = SystemInfo.graphicsDeviceName
           });
+      });
+
+      // 현재 활성화된 씬 명령어
+      RegisterCommand("server:scenes", "현재 활성화된 씬 목록을 출력합니다.", (_, _) =>
+      {
+        var scenes = new JArray();
+        for (var i = 0; i < SceneManager.sceneCount; i++)
+        {
+          var scene = SceneManager.GetSceneAt(i);
+          scenes.Add(new JObject
+          {
+            ["name"] = scene.name,
+            ["path"] = scene.path,
+            ["isLoaded"] = scene.isLoaded,
+            ["buildIndex"] = scene.buildIndex
+          });
+        }
+
+        return CommandResponse.Success(
+          $"Active Scenes ({SceneManager.sceneCount}): \n" +
+          string.Join("\n", Enumerable.Range(0, SceneManager.sceneCount)
+            .Select(i => SceneManager.GetSceneAt(i).name)),
+          scenes);
+      });
+
+      // 현재 플레이어 목록 명령어
+      RegisterCommand("server:players", "현재 접속한 플레이어 목록을 출력합니다.", (_, _) =>
+      {
+        var players = serverManager.players.Values;
+        var playerArray = new JArray();
+        foreach (var player in players)
+          playerArray.Add(new JObject
+          {
+            ["username"] = player.username,
+            ["ipAddress"] = player.conn.address,
+            ["connectedAt"] = player.connectedAt.ToString("o")
+          });
+        return CommandResponse.Success(
+          $"Connected Players ({players.Count}): \n" +
+          string.Join("\n", players.Select(p => $"{p.username} ({p.conn.connectionId})")),
+          playerArray);
       });
     }
 
