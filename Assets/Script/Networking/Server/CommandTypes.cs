@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEngine.Serialization;
@@ -59,6 +60,11 @@ namespace PixelCollector.Networking.Server
     public static CommandResponse Success(string message, JToken data = null)
     {
       return new CommandResponse(100, message, data);
+    }
+
+    public static CommandResponse Message(params string[] msg)
+    {
+      return new CommandResponse(101, string.Join('\n', msg), null);
     }
 
     /// <summary>

@@ -77,21 +77,37 @@ namespace PixelCollector
     private void RegisterDefaultCommands()
     {
       // 상태 요청 명령어
-      RegisterCommand("status", (_, _) => CommandResponse.Success("Status retrieved", new JObject
+      RegisterCommand("status", "서버 상태를 출력합니다.", (_, _) =>
       {
-        ["online"] = true,
-        ["serverTime"] = DateTimeOffset.UtcNow.ToString("o"),
-        ["uptime"] = Time.realtimeSinceStartup
-      }));
+        var serverTime = DateTimeOffset.UtcNow.ToString("o");
+        
+        return CommandResponse.Success(
+          "Status \n" +
+          "online: true \n" +
+          $"serverTime: {serverTime} \n" +
+          $"uptime: {Time.realtimeSinceStartup}",
+          new JObject
+          {
+            ["online"] = true,
+            ["serverTime"] = DateTimeOffset.UtcNow.ToString("o"),
+            // 메인 스레드에서 갱신된 캐시값을 사용합니다.
+            ["uptime"] = Time.realtimeSinceStartup
+          });
+      });
 
       // Ping 명령어
-      RegisterCommand("ping", (_, _) => CommandResponse.Success("pong", new JObject
+      RegisterCommand("ping", "핑 테스트", (_, _) =>
       {
-        ["timestamp"] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
-      }));
+        var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        
+        return CommandResponse.Success($"pong {timeStamp}", new JObject
+        {
+          ["timestamp"] = timeStamp
+        });
+      });
 
       // 도움말 명령어
-      RegisterCommand("help", (_, _) =>
+      RegisterCommand("help", "명령어 목록을 출력합니다.", (_, _) =>
       {
         var commands = commandHandler.GetRegisteredCommands().ToArray();
         var helpMessage = "사용 가능한 명령어:\n" + string.Join("\n", commands.Select(c => $"  {c}"));
@@ -106,18 +122,27 @@ namespace PixelCollector
       });
 
       // 서버 정보 명령어
-      RegisterCommand("server:info", (_, _) =>
+      RegisterCommand("server:info", "서버 정보를 출력합니다.", (_, _) =>
       {
-        return CommandResponse.Success("서버 정보", new JObject
-        {
-          ["name"] = "Pixel Collector Unity Server",
-          ["version"] = Application.version,
-          ["unityVersion"] = Application.unityVersion,
-          ["platform"] = Application.platform.ToString(),
-          ["uptime"] = Time.realtimeSinceStartup,
-          ["systemMemory"] = SystemInfo.systemMemorySize,
-          ["graphicsDevice"] = SystemInfo.graphicsDeviceName
-        });
+        return CommandResponse.Success(
+          "Server Info \n" +
+          $"name: Pixel Collector Unity Server \n" +
+          $"version: {Application.version} \n" +
+          $"unityVersion: {Application.unityVersion} \n" +
+          $"platform: {Application.platform} \n" +
+          $"uptime: {Time.realtimeSinceStartup} \n" +
+          $"systemMemory: {SystemInfo.systemMemorySize} \n" +
+          $"graphicsDevice: {SystemInfo.graphicsDeviceName}",
+          new JObject
+          {
+            ["name"] = "Pixel Collector Unity Server",
+            ["version"] = Application.version,
+            ["unityVersion"] = Application.unityVersion,
+            ["platform"] = Application.platform.ToString(),
+            ["uptime"] = Time.realtimeSinceStartup,
+            ["systemMemory"] = SystemInfo.systemMemorySize,
+            ["graphicsDevice"] = SystemInfo.graphicsDeviceName
+          });
       });
     }
 
@@ -125,10 +150,11 @@ namespace PixelCollector
     ///   새로운 명령어 핸들러를 등록합니다.
     /// </summary>
     /// <param name="command">명령어 문자열</param>
+    /// <param name="description">명령어 설명</param>
     /// <param name="handler">명령어 처리 함수 (소켓과 인자를 받아 응답을 반환)</param>
-    public void RegisterCommand(string command, CommandHandler handler)
+    public void RegisterCommand(string command, string description, CommandHandler handler)
     {
-      commandHandler.RegisterCommand(command, handler);
+      commandHandler.RegisterCommand(command, description, handler);
     }
 
     /// <summary>

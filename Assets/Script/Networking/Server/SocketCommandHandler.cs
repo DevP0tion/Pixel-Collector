@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using PixelCollector.Util;
 using SocketIOClient;
 using UnityEngine;
 
@@ -12,6 +13,18 @@ namespace PixelCollector.Networking.Server
   /// </summary>
   public delegate CommandResponse CommandHandler(SocketIOUnity socket, CommandData args);
 
+  public class CommandHandlerData
+  {
+    public string description;
+    public CommandHandler handler;
+
+    public CommandHandlerData(string description, CommandHandler handler)
+    {
+      this.description = description;
+      this.handler = handler;
+    }
+  }
+
   /// <summary>
   ///   소켓 서버로부터 명령을 수신하고 처리하는 클래스입니다.
   ///   명령어 데이터 형식: {cmd: string, data: {}}
@@ -22,7 +35,7 @@ namespace PixelCollector.Networking.Server
     /// <summary>
     ///   명령어 핸들러 딕셔너리입니다. 키는 명령어 문자열이며, 값은 소켓과 인자를 받아 응답을 반환하는 함수입니다.
     /// </summary>
-    private readonly Dictionary<string, CommandHandler> commandHandlers = new();
+    private readonly Dictionary<string, CommandHandlerData> commands = new();
 
     /// <summary>
     ///   소켓 인스턴스 (응답 전송용)
@@ -42,8 +55,9 @@ namespace PixelCollector.Networking.Server
     ///   새로운 명령어 핸들러를 등록합니다.
     /// </summary>
     /// <param name="command">명령어 문자열</param>
+    /// <param name="description">명령어 설명</param>
     /// <param name="handler">명령어 처리 함수 (소켓과 인자를 받아 응답을 반환)</param>
-    public void RegisterCommand(string command, CommandHandler handler)
+    public void RegisterCommand(string command, string description, CommandHandler handler)
     {
       if (string.IsNullOrEmpty(command))
       {
@@ -51,7 +65,7 @@ namespace PixelCollector.Networking.Server
         return;
       }
 
-      commandHandlers[command] = handler;
+      commands[command] = new CommandHandlerData(description, handler);
     }
 
     /// <summary>
@@ -62,7 +76,7 @@ namespace PixelCollector.Networking.Server
     {
       if (string.IsNullOrEmpty(command)) return;
 
-      commandHandlers.Remove(command);
+      commands.Remove(command);
     }
 
     /// <summary>
@@ -74,7 +88,7 @@ namespace PixelCollector.Networking.Server
     {
       if (string.IsNullOrEmpty(command)) return false;
 
-      return commandHandlers.ContainsKey(command);
+      return commands.ContainsKey(command);
     }
 
     /// <summary>
@@ -106,7 +120,7 @@ namespace PixelCollector.Networking.Server
     ///   명령어를 직접 실행합니다.
     /// </summary>
     /// <param name="cmd">실행할 명령어 데이터</param>
-    public void ExecuteCommand(CommandData cmd)
+    public async void ExecuteCommand(CommandData cmd)
     {
       if (string.IsNullOrEmpty(cmd.cmd))
       {
@@ -115,9 +129,10 @@ namespace PixelCollector.Networking.Server
         return;
       }
 
-      if (commandHandlers.TryGetValue(cmd.cmd, out var handler))
+      if (commands.TryGetValue(cmd.cmd, out var data))
       {
-        var response = handler.Invoke(socket, cmd);
+        // 핸들러 실행을 메인 스레드에서 수행하고 결과를 현재 스레드로 가져옴
+        var response = await MainThreadDispatcher.StaticEnqueueAsync(() => data.handler.Invoke(socket, cmd));
         if (response != null) SendResponse(response);
       }
       else
@@ -147,7 +162,7 @@ namespace PixelCollector.Networking.Server
     /// </summary>
     public void ClearCommands()
     {
-      commandHandlers.Clear();
+      commands.Clear();
     }
 
     /// <summary>
@@ -155,7 +170,7 @@ namespace PixelCollector.Networking.Server
     /// </summary>
     public IEnumerable<string> GetRegisteredCommands()
     {
-      return commandHandlers.Keys;
+      return commands.Keys;
     }
   }
 }
