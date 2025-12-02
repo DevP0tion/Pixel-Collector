@@ -21,8 +21,6 @@ MonoBehaviour:
   m_OverrideGlobalSceneList: 1
   m_Scenes:
   - m_enabled: 1
-    m_path: Assets/Scene/Server/ServerScene.unity
-  - m_enabled: 1
     m_path: Assets/Scene/Intro/IntroScene.unity
   - m_enabled: 1
     m_path: Assets/Scene/Lobby/LobbyScene.unity

@@ -1,5 +1,5 @@
 using Mirror;
-using PixelCollector.Networking.Packets;
+using UnityEngine;
 
 namespace PixelCollector.Networking.Packet
 {
@@ -9,7 +9,7 @@ namespace PixelCollector.Networking.Packet
     {
       packet.Write(writer);
     }
-
+    
     public static MovePacket ReadMovePacket(this NetworkReader reader) => MovePacket.Read(reader);
     public static AuthPacket ReadAuthPacket(this NetworkReader reader) => AuthPacket.Read(reader);
     public static BulletPacket ReadBulletPacket(this NetworkReader reader) => BulletPacket.Read(reader);

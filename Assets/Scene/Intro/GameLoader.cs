@@ -1,18 +1,29 @@
 using System;
+using Cysharp.Threading.Tasks;
+using PixelCollector.Bullet.Properties;
 using PixelCollector.Core;
 using PixelCollector.Core.Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PixelCollector
+namespace PixelCollector.Scene.Intro
 {
   public class GameLoader : MonoBehaviour
   {
     public GameManager manager;
 
-    private void Awake()
+    private async void Start()
     {
-      SceneManager.LoadScene(Defines.LobbyScene);
+      await BulletProperties.Load();
+      
+      if (Application.platform == RuntimePlatform.WindowsServer)
+      {
+        SceneManager.LoadScene(Defines.FieldScene);
+      }
+      else
+      {
+        SceneManager.LoadScene(Defines.LobbyScene);
+      }
     }
   }
 }

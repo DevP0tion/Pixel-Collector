@@ -1,7 +1,7 @@
 using Mirror;
 using UnityEngine;
 
-namespace PixelCollector.Utils.Singletons
+namespace PixelCollector.Util.Singletons
 {
   public class NetworkSingleton<T> : NetworkBehaviour where T : NetworkSingleton<T>
   {

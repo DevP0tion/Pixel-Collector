@@ -1,4 +1,5 @@
 using Mirror;
+using PixelCollector.Bullet.Properties;
 using PixelCollector.Networking.Client;
 using PixelCollector.Networking.Packet;
 using PixelCollector.Networking.Server;
@@ -9,6 +10,7 @@ namespace PixelCollector.Unit.Player
   public class PlayerBaseModule : UnitBaseModule
   {
     public float speed = 10f;
+    public BulletProperties bullet;
     
     protected Vector2 direction;
     
@@ -46,6 +48,12 @@ namespace PixelCollector.Unit.Player
     public void MoveCommand(MovePacket packet)
     {
       direction = packet.canceled ? Vector2.zero : packet.direction * speed;
+    }
+
+    [Command]
+    public void ShootCommand(Vector3 target)
+    {
+      bullet.Shoot(team, transform.position, target, 1);
     }
     
     #endregion

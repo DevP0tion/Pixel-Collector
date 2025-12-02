@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using Mirror;
-using PixelCollector.Contents.Properties;
-using PixelCollector.Core;
-using PixelCollector.Networking.Packets;
-using PixelCollector.Script.Bullet;
+using PixelCollector.Bullet;
+using PixelCollector.Bullet.Properties;
+using PixelCollector.Networking.Packet;
 using PixelCollector.Util;
-using PixelCollector.Utils.Singletons;
+using PixelCollector.Util.Singletons;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace PixelCollector.Manager
+namespace PixelCollector.Core.Manager
 {
   public class BulletManager : NetworkSingleton<BulletManager>
   {

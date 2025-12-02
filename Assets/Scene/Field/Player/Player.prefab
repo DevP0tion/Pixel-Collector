@@ -324,8 +324,8 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   team:
-    color: {r: 0, g: 0, b: 0, a: 0}
-    name: 
+    color: {r: 1, g: 1, b: 1, a: 1}
+    name: None
     id: 0
   body: {fileID: 5489289390634278150}
   <MaxHealth>k__BackingField: 0
@@ -336,6 +336,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   speed: 10
+  bullet: {fileID: 11400000, guid: fac0a43dddaa22e45b5bd0cf4e0744fb, type: 2}
 --- !u!114 &6445595744892102215
 MonoBehaviour:
   m_ObjectHideFlags: 0

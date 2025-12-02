@@ -2,15 +2,13 @@ using System;
 using System.Collections.Generic;
 using PixelCollector.Core;
 using PixelCollector.Core.Manager;
-using PixelCollector.Manager;
-using PixelCollector.Networking.Packets;
-using PixelCollector.Script.Bullet;
+using PixelCollector.Networking.Packet;
 using PixelCollector.Util;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-namespace PixelCollector.Contents.Properties
+namespace PixelCollector.Bullet.Properties
 {
   [CreateAssetMenu(fileName = "new Bullet Properties", menuName = "Properties/Bullet Properties")]
   public class BulletProperties : ScriptableObject

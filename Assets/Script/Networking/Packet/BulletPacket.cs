@@ -1,11 +1,10 @@
 using System;
 using Mirror;
-using PixelCollector.Contents.Properties;
+using PixelCollector.Bullet.Properties;
 using PixelCollector.Core;
-using PixelCollector.Networking.Packet;
 using UnityEngine;
 
-namespace PixelCollector.Networking.Packets
+namespace PixelCollector.Networking.Packet
 {
   [Serializable]
   public struct BulletPacket : IPacket

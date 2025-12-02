@@ -6,7 +6,7 @@ using SocketIOClient;
 using SocketIOClient.Transport;
 using UnityEngine;
 
-namespace PixelCollector
+namespace PixelCollector.Networking.Server
 {
   /// <summary>
   ///   소켓 서버와 통신하여 명령을 수신하고 서버 상태를 전송하는 클래스입니다.
@@ -26,6 +26,12 @@ namespace PixelCollector
     #region Unity Callback
     private void Awake()
     {
+      if (Application.platform != RuntimePlatform.WindowsServer)
+      {
+        Destroy(gameObject);
+        return;
+      }
+      
       DontDestroyOnLoad(gameObject);
       RegisterDefaultCommands();
     }

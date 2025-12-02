@@ -1,6 +1,5 @@
-#if Temp
 using System.Linq;
-using PixelCollector.Worlds;
+using PixelCollector.Core;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,5 +20,3 @@ public class TeamDrawer : PropertyDrawer
     EditorGUI.EndProperty();
   }
 }
-
-#endif

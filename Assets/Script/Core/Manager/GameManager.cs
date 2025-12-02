@@ -1,5 +1,5 @@
 using NaughtyAttributes;
-using PixelCollector.Contents.Properties;
+using PixelCollector.Bullet.Properties;
 using PixelCollector.Util.Singletons;
 using RotaryHeart.Lib.SerializableDictionary;
 using UnityEngine;

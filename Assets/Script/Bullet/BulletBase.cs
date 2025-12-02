@@ -1,11 +1,11 @@
 using System;
-using PixelCollector.Contents.Properties;
+using PixelCollector.Bullet.Properties;
 using PixelCollector.Core;
 using PixelCollector.Core.Interface;
 using PixelCollector.Util;
 using UnityEngine;
 
-namespace PixelCollector.Script.Bullet
+namespace PixelCollector.Bullet
 {
   public class BulletBase : PooledObject, IAttacker
   {

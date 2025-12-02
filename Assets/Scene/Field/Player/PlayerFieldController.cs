@@ -35,23 +35,24 @@ namespace PixelCollector.Scene.Field.Player
     {
       RegisterHandlers();
 
-      foreach (var action in actions.actionMaps.SelectMany(map => map.actions))
+      foreach (var map in actions.actionMaps) map.Enable();
+      
+      foreach (var (key, handler) in actionHandlers)
       {
-        if (!actionHandlers.TryGetValue(action.name, out var handler)) continue;
+        var action = actions.FindAction(key);
+        if (action == null) continue;
         
-        action.performed += handler;
-        action.canceled += handler;
+        actions.FindAction(key).performed += handler;
+        actions.FindAction(key).canceled += handler;
       }
     }
 
     private void OnDestroy()
     {
-      foreach (var action in actions.actionMaps.SelectMany(map => map.actions))
+      foreach (var (key, handler) in actionHandlers)
       {
-        if (!actionHandlers.TryGetValue(action.name, out var handler)) continue;
-        
-        action.performed -= handler;
-        action.canceled -= handler;
+        actions.FindAction(key).performed -= handler;
+        actions.FindAction(key).canceled -= handler;
       }
     }
     
@@ -63,13 +64,24 @@ namespace PixelCollector.Scene.Field.Player
     {
       actionHandlers = new Dictionary<string, Action<InputAction.CallbackContext>>
       {
-        {"Player/Move", OnMove}
+        {"Player/Move", OnMove},
+        {"UI/Click", OnLeftClick}
       };
     }
     
     private void OnMove(InputAction.CallbackContext ctx)
     {
       PlayerObject.MoveCommand(new MovePacket(ctx));
+    }
+    
+    private void OnLeftClick(InputAction.CallbackContext ctx)
+    {
+      if (ctx.ReadValue<float>() == 1)
+      {
+        PlayerObject.ShootCommand(Camera.main != null
+          ? Camera.main.ScreenToWorldPoint(Input.mousePosition)
+          : Vector3.zero);
+      }
     }
     
     #endregion

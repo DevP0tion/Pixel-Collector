@@ -8,6 +8,21 @@ namespace PixelCollector.Networking.Server
   public class NetServerManager : NetworkManager
   {
     public Dictionary<int, NetworkPlayer> players = new(); 
+    
+    #region Unity Callback
+
+    public override void Awake()
+    {
+      if (Application.platform != RuntimePlatform.WindowsServer)
+      {
+        Destroy(gameObject);
+        return;
+      }
+      base.Awake();
+    }
+
+    #endregion
+    
     public override void OnServerConnect(NetworkConnectionToClient conn)
     {
       base.OnServerConnect(conn);
