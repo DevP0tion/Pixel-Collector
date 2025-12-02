@@ -23,9 +23,7 @@ MonoBehaviour:
   - m_enabled: 1
     m_path: Assets/Scene/Server/ServerScene.unity
   - m_enabled: 1
-    m_path: Assets/Scene/Field/FieldScene.unity
-  - m_enabled: 1
-    m_path: Assets/Scene/Lobby/LobbyScene.unity
+    m_path: Assets/Scene/NetworkLobby/NetworkLobbyScene.unity
   m_ScriptingDefines: []
   m_PlayerSettingsYaml:
     m_Settings:

@@ -7,10 +7,10 @@ namespace PixelCollector.Networking.Server
 {
   public class NetServerManager : NetworkManager
   {
-    public Dictionary<NetworkConnectionToClient, NetworkPlayer> players = new(); 
-    public override void OnServerAddPlayer(NetworkConnectionToClient conn)
+    public Dictionary<int, NetworkPlayer> players = new(); 
+    public override void OnServerConnect(NetworkConnectionToClient conn)
     {
-      base.OnServerAddPlayer(conn);
+      base.OnServerConnect(conn);
       
       Debug.Log("Player connected: " + conn.connectionId);
       
@@ -20,7 +20,16 @@ namespace PixelCollector.Networking.Server
         username = $"Player{conn.connectionId}",
         connectedAt = System.DateTime.Now
       };
-      players[conn] = player;
+      players[conn.connectionId] = player;
+    }
+
+    public override void OnServerDisconnect(NetworkConnectionToClient conn)
+    {
+      base.OnServerDisconnect(conn);
+      
+      Debug.Log("Player disconnected: " + conn.connectionId);
+      
+      players.Remove(conn.connectionId);
     }
   }
 }

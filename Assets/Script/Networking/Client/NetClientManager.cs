@@ -7,11 +7,28 @@ namespace PixelCollector.Networking.Client
 {
   public class NetClientManager : NetworkManager
   {
-    public override void Start()
+    private static NetClientManager instance;
+    
+    #region Unity Callback
+    
+    public override void Awake()
     {
-      base.Start();
+      base.Awake();
 
-      StartClient(new Uri("kcp://localhost:10224"));
+      if (instance)
+        Destroy(gameObject);
+      else
+      {
+        DontDestroyOnLoad(gameObject);
+        instance = this;
+      }
+    }
+    
+    #endregion
+
+    public void JoinServer()
+    {
+      NetworkClient.Connect("localhost");
     }
   }
 }
