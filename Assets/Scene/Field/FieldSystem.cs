@@ -13,14 +13,17 @@ namespace PixelCollector.Scene.Field
     {
       base.Awake();
 
-      var player = NetClientManager.LocalPlayer;
-      if (player != null)
-        vCamera.Target = new CameraTarget
-        {
-          TrackingTarget = NetClientManager.LocalPlayer.transform
-        };
+      if (Application.platform != RuntimePlatform.WindowsServer)
+      {
+        var player = NetClientManager.LocalPlayer;
+        if (player != null)
+          vCamera.Target = new CameraTarget
+          {
+            TrackingTarget = NetClientManager.LocalPlayer.transform
+          };
       
-      NetClientManager.Instance.OnPlayerChanged += p => vCamera.Target = new CameraTarget {TrackingTarget = p.transform};
+        NetClientManager.Instance.OnPlayerChanged += p => vCamera.Target = new CameraTarget {TrackingTarget = p.transform};
+      }
     }
   }
 }

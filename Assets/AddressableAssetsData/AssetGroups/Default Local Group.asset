@@ -20,6 +20,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fac0a43dddaa22e45b5bd0cf4e0744fb
+    m_Address: Assets/Scene/Field/Player/Basic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Bullet
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: ef928a222523c4d4a9668c6111884759, type: 2}
   m_SchemaSet:

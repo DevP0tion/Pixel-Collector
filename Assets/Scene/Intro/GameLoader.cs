@@ -16,11 +16,7 @@ namespace PixelCollector.Scene.Intro
     {
       await BulletProperties.Load();
       
-      if (Application.platform == RuntimePlatform.WindowsServer)
-      {
-        SceneManager.LoadScene(Defines.FieldScene);
-      }
-      else
+      if (Application.platform != RuntimePlatform.WindowsServer)
       {
         SceneManager.LoadScene(Defines.LobbyScene);
       }
