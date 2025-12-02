@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 using PixelCollector.Networking.Server;
 using SocketIOClient;
 using SocketIOClient.Transport;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace PixelCollector
 {
@@ -50,6 +48,8 @@ namespace PixelCollector
     
     #endregion
 
+    #region SocketIO Initialization
+    
     /// <summary>
     ///   소켓 연결을 초기화하고 이벤트 핸들러를 등록합니다.
     /// </summary>
@@ -80,116 +80,11 @@ namespace PixelCollector
 
     /// <summary>
     ///   기본 명령어들을 등록합니다.
-    ///   Pixel-Server의 명령어 인터페이스에 맞춰 구현합니다.
+    ///   CommandManager를 통해 명령어를 등록합니다.
     /// </summary>
     private void RegisterDefaultCommands()
     {
-      // 상태 요청 명령어
-      RegisterCommand("status", "서버 상태를 출력합니다.", (_, _) =>
-      {
-        var serverTime = DateTimeOffset.UtcNow.ToString("o");
-
-        return CommandResponse.Success(
-          "Status \n" +
-          "online: true \n" +
-          $"serverTime: {serverTime} \n" +
-          $"uptime: {Time.realtimeSinceStartup}",
-          new JObject
-          {
-            ["online"] = true,
-            ["serverTime"] = DateTimeOffset.UtcNow.ToString("o"),
-            // 메인 스레드에서 갱신된 캐시값을 사용합니다.
-            ["uptime"] = Time.realtimeSinceStartup
-          });
-      });
-
-      // Ping 명령어
-      RegisterCommand("ping", "핑 테스트", (_, _) =>
-      {
-        var timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-        return CommandResponse.Success($"pong {timeStamp}", new JObject
-        {
-          ["timestamp"] = timeStamp
-        });
-      });
-
-      // 도움말 명령어
-      RegisterCommand("help", "명령어 목록을 출력합니다.", (_, _) =>
-      {
-        var commands = commandHandler.GetRegisteredCommands().ToArray();
-        var helpMessage = "사용 가능한 명령어:\n" + string.Join("\n", commands.Select(c => $"  {c}"));
-        var result = new JArray();
-
-        foreach (var cmd in commands) result.Add(cmd);
-
-        return CommandResponse.Success(helpMessage, result);
-      });
-
-      // 서버 정보 명령어
-      RegisterCommand("server:info", "서버 정보를 출력합니다.", (_, _) =>
-      {
-        return CommandResponse.Success(
-          "Server Info \n" +
-          "name: Pixel Collector Unity Server \n" +
-          $"version: {Application.version} \n" +
-          $"unityVersion: {Application.unityVersion} \n" +
-          $"platform: {Application.platform} \n" +
-          $"uptime: {Time.realtimeSinceStartup} \n" +
-          $"systemMemory: {SystemInfo.systemMemorySize} \n" +
-          $"graphicsDevice: {SystemInfo.graphicsDeviceName}",
-          new JObject
-          {
-            ["name"] = "Pixel Collector Unity Server",
-            ["version"] = Application.version,
-            ["unityVersion"] = Application.unityVersion,
-            ["platform"] = Application.platform.ToString(),
-            ["uptime"] = Time.realtimeSinceStartup,
-            ["systemMemory"] = SystemInfo.systemMemorySize,
-            ["graphicsDevice"] = SystemInfo.graphicsDeviceName
-          });
-      });
-
-      // 현재 활성화된 씬 명령어
-      RegisterCommand("server:scenes", "현재 활성화된 씬 목록을 출력합니다.", (_, _) =>
-      {
-        var scenes = new JArray();
-        for (var i = 0; i < SceneManager.sceneCount; i++)
-        {
-          var scene = SceneManager.GetSceneAt(i);
-          scenes.Add(new JObject
-          {
-            ["name"] = scene.name,
-            ["path"] = scene.path,
-            ["isLoaded"] = scene.isLoaded,
-            ["buildIndex"] = scene.buildIndex
-          });
-        }
-
-        return CommandResponse.Success(
-          $"Active Scenes ({SceneManager.sceneCount}): \n" +
-          string.Join("\n", Enumerable.Range(0, SceneManager.sceneCount)
-            .Select(i => SceneManager.GetSceneAt(i).name)),
-          scenes);
-      });
-
-      // 현재 플레이어 목록 명령어
-      RegisterCommand("server:players", "현재 접속한 플레이어 목록을 출력합니다.", (_, _) =>
-      {
-        var players = serverManager.players.Values;
-        var playerArray = new JArray();
-        foreach (var player in players)
-          playerArray.Add(new JObject
-          {
-            ["username"] = player.username,
-            ["ipAddress"] = player.conn.address,
-            ["connectedAt"] = player.connectedAt.ToString("o")
-          });
-        return CommandResponse.Success(
-          $"Connected Players ({players.Count}): \n" +
-          string.Join("\n", players.Select(p => $"{p.username} ({p.conn.connectionId})")),
-          playerArray);
-      });
+      CommandManager.RegisterDefaultCommands(commandHandler, serverManager);
     }
 
     /// <summary>
@@ -309,5 +204,7 @@ namespace PixelCollector
     {
       Debug.Log($"[ServerManagement] 소켓 서버 연결이 해제되었습니다: {reason}");
     }
+    
+    #endregion
   }
 }
