@@ -23,9 +23,9 @@ namespace PixelCollector
     ///   명령어 처리를 담당하는 핸들러입니다.
     /// </summary>
     private readonly SocketCommandHandler commandHandler = new();
-
     private SocketIOUnity socket;
 
+    #region Unity Callback
     private void Awake()
     {
       DontDestroyOnLoad(gameObject);
@@ -47,6 +47,8 @@ namespace PixelCollector
         socket.Dispose();
       }
     }
+    
+    #endregion
 
     /// <summary>
     ///   소켓 연결을 초기화하고 이벤트 핸들러를 등록합니다.

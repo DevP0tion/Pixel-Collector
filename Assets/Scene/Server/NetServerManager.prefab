@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4251338644547151616}
   - component: {fileID: 1454174632851637535}
   - component: {fileID: 6598990804238876606}
+  - component: {fileID: 5842556775414917271}
   m_Layer: 0
   m_Name: NetServerManager
   m_TagString: Untagged
@@ -33,7 +34,6 @@ Transform:
   m_Children:
   - {fileID: 879504637971404092}
   - {fileID: 5966945351740090068}
-  - {fileID: 3223625570903423705}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1454174632851637535
@@ -61,9 +61,9 @@ MonoBehaviour:
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   exceptionsDisconnect: 1
-  authenticator: {fileID: 1551703095016215232}
+  authenticator: {fileID: 8877532213165377963}
   offlineScene: 
-  onlineScene: Assets/Scene/NetworkLobby/NetworkLobbyScene.unity
+  onlineScene: Assets/Scene/Field/FieldScene.unity
   offlineSceneLoadDelay: 0
   playerPrefab: {fileID: 559432182520426274, guid: 4c724f493951392428cd27f77fef0d73, type: 3}
   autoCreatePlayer: 1
@@ -95,6 +95,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b979f26c95d34324ba005bfacfa9c4fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5842556775414917271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2888943002074366125}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offsetX: 0
+  offsetY: 0
 --- !u!1 &6753785184458087028
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,7 +125,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &879504637971404092
 Transform:
   m_ObjectHideFlags: 0
@@ -175,60 +189,6 @@ MonoBehaviour:
     - user
     _values:
     - 1234
---- !u!1 &9146579958859621196
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3223625570903423705}
-  - component: {fileID: 1551703095016215232}
-  m_Layer: 0
-  m_Name: Auth
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3223625570903423705
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9146579958859621196}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4251338644547151616}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1551703095016215232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9146579958859621196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28496b776660156428f00cf78289c1ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OnServerAuthenticated:
-    m_PersistentCalls:
-      m_Calls: []
-  OnClientAuthenticated:
-    m_PersistentCalls:
-      m_Calls: []
-  serverUsername: user
-  serverPassword: 1234
-  username: user
-  password: 1234
 --- !u!1 &9153874433231281041
 GameObject:
   m_ObjectHideFlags: 0

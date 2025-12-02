@@ -22,6 +22,10 @@ namespace PixelCollector.Unit.Player
     
     #endregion
     
+    #region Networking
+    
+    #endregion
+    
     #region Control
 
     #if !OFFLINE
