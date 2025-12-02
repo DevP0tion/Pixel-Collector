@@ -53,7 +53,7 @@ namespace PixelCollector.Unit.Player
     [Command]
     public void ShootCommand(Vector3 target)
     {
-      bullet.Shoot(team, transform.position, target, 1);
+      bullet.Shoot(Team, transform.position, target, 1);
     }
     
     #endregion

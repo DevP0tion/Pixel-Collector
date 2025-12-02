@@ -21,6 +21,7 @@ namespace PixelCollector.Bullet.Properties
     public AssetReference bulletPath;
     public float speed = 1;
     public float damageMultiplier = 1;
+    public float lifeTime = 5;
 
     public BulletBase Pooling()
     {
@@ -32,7 +33,7 @@ namespace PixelCollector.Bullet.Properties
     }
     
     public void Shoot(Team team, Vector3 startPosition, Vector3 targetPosition, float damage = 1)
-      => BulletManager.Shoot(new BulletPacket(this, team, startPosition, targetPosition, damage));
+      => BulletManager.Shoot(new BulletPacket(this, team, startPosition, targetPosition, damage, lifeTime));
 
     #region Initialization
     public static bool Loaded { get; private set; } = false;

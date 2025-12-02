@@ -14,6 +14,7 @@ namespace PixelCollector.Bullet
     public float speed = 10f;
     public float lifeTime = 5f;
     public Vector2 direction;
+    public Rigidbody2D body;
     
     private BulletProperties properties;
     
@@ -21,6 +22,32 @@ namespace PixelCollector.Bullet
 
     protected void FixedUpdate()
     {
+      if (lifeTime > 0)
+      {
+        lifeTime -= Time.fixedDeltaTime;
+        body.linearVelocity = direction.normalized * speed;
+      }
+      else if(gameObject.activeSelf)
+        Release();
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D other)
+    {
+      Debug.Log("Bullet hit " + other.gameObject.name);
+      if (other.TryGetComponent<IDamageable>(out var damageable))
+      {
+        if (damageable.Team != Team)
+        {
+          Debug.Log("Bullet damaged " + other.gameObject.name);
+          damageable.Damage(damage, this);
+          Release();
+        }
+      }
+      else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
+      {
+        Debug.Log("Bullet hit obstacle");
+        Release();
+      }
       
     }
 
@@ -33,11 +60,6 @@ namespace PixelCollector.Bullet
       {
         properties = value;
       } 
-    }
-    
-    public virtual void Shoot(Vector2 direction)
-    {
-      
     }
   }
 }

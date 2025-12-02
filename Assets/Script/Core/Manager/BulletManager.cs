@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Mirror;
 using PixelCollector.Bullet;
@@ -12,65 +13,22 @@ namespace PixelCollector.Core.Manager
 {
   public class BulletManager : NetworkSingleton<BulletManager>
   {
-    #region Poolling
-    
-    [SerializeField] private Transform released;
-    [SerializeField] private List<GameObject> instances = new();
-
-    /// <summary>
-    ///   불릿 매니저 인스턴스가 바뀔 경우를 대비해 인스턴스 변수로 선언
-    /// </summary>
-    private readonly Dictionary<string, ObjectPool<BulletBase>> pools = new();
-
-    private ObjectPool<BulletBase> InitPool(string id, GameObject bulletPrefab)
+    private static void ShootFunc(BulletPacket packet)
     {
-      if (pools.TryGetValue(id, out var pool)) return pool;
-
-      return pools[id] = new ObjectPool<BulletBase>(() =>
-        {
-          // Create
-          var bullet = Instantiate(bulletPrefab).GetComponent<BulletBase>();
-          instances.Add(bullet.gameObject);
-          bullet.transform.SetParent(Instance.transform);
-          return bullet;
-        },
-        bullet =>
-        {
-          // Get
-          bullet.gameObject.SetActive(true);
-          bullet.transform.SetParent(Instance.transform);
-        },
-        bullet =>
-        {
-          // Release
-          bullet.gameObject.SetActive(false);
-          bullet.transform.SetParent(Instance.released);
-        },
-        bullet =>
-        {
-          // Destroy
-          Destroy(bullet.gameObject);
-        }
-      );
-    }
-
-    #endregion
-    
-    private static void ShootFunc(BulletProperties properties, Vector3 startPos, Vector3 targetPosition, Team team, float damage)
-    {
-      var bullet = properties.Pooling();
-      bullet.transform.position = startPos;
-      bullet.Team = team;
-      bullet.transform.rotation = ((Vector2)bullet.transform.position).GetDirection(targetPosition);
+      var bullet = packet.Type.Pooling();
+      bullet.transform.position = packet.startPos;
+      bullet.Team = packet.Team;
+      bullet.transform.rotation = ((Vector2)bullet.transform.position).GetDirection(packet.targetPos);
       bullet.direction = bullet.transform.rotation.ToVector2Direction();
-      bullet.damage = damage;
+      bullet.damage = packet.damage;
+      bullet.lifeTime = packet.lifeTime;
     }
 
     public static void Shoot(BulletPacket packet)
     {
       if (NetworkServer.active)
       {
-        ShootFunc(packet.Type, packet.startPos, packet.targetPos, packet.Team, packet.damage);
+        ShootFunc(packet);
         Instance.ShootRpc(packet);
       }
       else
@@ -89,7 +47,7 @@ namespace PixelCollector.Core.Manager
     {
       if(NetworkServer.active) return;
       
-      ShootFunc(BulletProperties.Bullets[packet.typeName], packet.startPos, packet.targetPos, packet.Team, packet.damage);
+      ShootFunc(packet);
     }
     
     #endregion

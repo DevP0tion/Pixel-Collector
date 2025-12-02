@@ -12,7 +12,7 @@ namespace PixelCollector.Unit
   {
     #region MetaData
 
-    public Team team;
+    [field:SerializeField] public Team Team { get; set; }
     
     #endregion
     

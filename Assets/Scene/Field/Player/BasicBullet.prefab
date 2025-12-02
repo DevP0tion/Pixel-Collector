@@ -297,7 +297,7 @@ GameObject:
   - component: {fileID: 5315739999721105151}
   m_Layer: 0
   m_Name: BasicBullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -330,6 +330,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d12036effc34a8c9ca9b8c66885dd3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Team>k__BackingField:
+    color: {r: 1, g: 1, b: 1, a: 1}
+    name: None
+    id: 0
+  damage: 1
+  speed: 10
+  lifeTime: 5
+  direction: {x: 0, y: 0}
+  body: {fileID: 2080133795071984208}
 --- !u!50 &2080133795071984208
 Rigidbody2D:
   serializedVersion: 5
@@ -340,7 +349,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 8736398529120069297}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
@@ -355,8 +364,8 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
+  m_CollisionDetection: 1
+  m_Constraints: 4
 --- !u!66 &5315739999721105151
 CompositeCollider2D:
   m_ObjectHideFlags: 0
@@ -392,7 +401,7 @@ CompositeCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
+  m_GeometryType: 1
   m_GenerationType: 0
   m_EdgeRadius: 0
   m_ColliderPaths:
