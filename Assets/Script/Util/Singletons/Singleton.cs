@@ -33,8 +33,16 @@ namespace PixelCollector.Util.Singletons
     /// 해당 싱글톤이 활성화되어있는지 여부입니다.
     /// </summary>
     public static bool HasInstance => instance;
+
+    protected virtual void Awake()
+    {
+      if (instance == null)
+        instance = (T)this;
+      else if (instance != this)
+        Destroy(gameObject);
+    }
     
-    private void OnDestroy()
+    protected virtual void OnDestroy()
     {
       if (instance == this) instance = null;
     }

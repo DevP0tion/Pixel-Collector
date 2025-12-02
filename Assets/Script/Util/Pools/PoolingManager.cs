@@ -118,7 +118,7 @@ namespace PixelCollector.Util
 
     #region Unity Event
     
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
       foreach (var (_, pool) in pools)
       {
@@ -127,10 +127,9 @@ namespace PixelCollector.Util
       
       pools.Clear();
 
-      foreach (var pair in assetReferences)
+      foreach (var pair in assetReferences.Where(pair => pair.Value.IsValid()))
       {
-        if(pair.Value.IsValid())
-          pair.Value.ReleaseAsset();
+        pair.Value.ReleaseAsset();
       }
       
       assetReferences.Clear();

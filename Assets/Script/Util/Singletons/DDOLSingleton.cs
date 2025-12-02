@@ -4,7 +4,7 @@ namespace PixelCollector.Util.Singletons
 {
   public class DDOLSingleton<T> : Singleton<T> where T : DDOLSingleton<T>
   {
-    protected virtual void Awake()
+    protected override void Awake()
     {
       if (instance && instance != this)
       {

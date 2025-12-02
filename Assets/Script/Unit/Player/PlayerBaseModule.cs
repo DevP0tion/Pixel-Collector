@@ -1,5 +1,7 @@
 using Mirror;
+using PixelCollector.Networking.Client;
 using PixelCollector.Networking.Packet;
+using PixelCollector.Networking.Server;
 using UnityEngine;
 
 namespace PixelCollector.Unit.Player
@@ -23,7 +25,17 @@ namespace PixelCollector.Unit.Player
     #endregion
     
     #region Networking
-    
+
+    public override void OnStartClient()
+    {
+      base.OnStartClient();
+
+      if (NetworkServer.active)
+        NetServerManager.GetPlayer(connectionToClient).playerObject = this;
+      else if (isLocalPlayer)
+        NetClientManager.LocalPlayer = this;
+    }
+
     #endregion
     
     #region Control

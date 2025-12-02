@@ -31,5 +31,15 @@ namespace PixelCollector.Networking.Server
       
       players.Remove(conn.connectionId);
     }
+
+    public static NetworkPlayer GetPlayer(NetworkConnectionToClient conn)
+    {
+      var server = singleton as NetServerManager;
+      if (server != null && server.players.TryGetValue(conn.connectionId, out var player))
+      {
+        return player;
+      }
+      return null;
+    }
   }
 }
