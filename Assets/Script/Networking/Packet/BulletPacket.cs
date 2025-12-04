@@ -15,11 +15,12 @@ namespace PixelCollector.Networking.Packet
     public Vector3 targetPos;
     public float damage;
     public float lifeTime;
+    public int ownerId;
 
     public BulletProperties Type => BulletProperties.Bullets[typeName];
     public Team Team => Team.Get(teamName);
 
-    public BulletPacket(string typeName, string teamName, Vector3 startPos, Vector3 targetPos, float damage, float lifeTime)
+    public BulletPacket(string typeName, string teamName, Vector3 startPos, Vector3 targetPos, float damage, float lifeTime, int ownerId = -1)
     {
       this.typeName = typeName;
       this.teamName = teamName;
@@ -27,10 +28,11 @@ namespace PixelCollector.Networking.Packet
       this.targetPos = targetPos;
       this.damage = damage;
       this.lifeTime = lifeTime;
+      this.ownerId = ownerId;
     }
 
-    public BulletPacket(BulletProperties type, Team team, Vector3 startPos, Vector3 targetPos, float damage, float lifeTime) 
-      : this(type.name, team.Name, startPos, targetPos, damage = 1, lifeTime = 5) {}
+    public BulletPacket(BulletProperties type, Team team, Vector3 startPos, Vector3 targetPos, float damage = 1, float lifeTime = 5, int ownerId = -1) 
+      : this(type.name, team.Name, startPos, targetPos, damage, lifeTime, ownerId) {}
 
     public void Write(NetworkWriter writer)
     {
@@ -40,6 +42,7 @@ namespace PixelCollector.Networking.Packet
       writer.WriteVector3(targetPos);
       writer.WriteFloat(damage);
       writer.WriteFloat(lifeTime);
+      writer.WriteInt(ownerId);
     }
     
     public static BulletPacket Read(NetworkReader reader)
@@ -50,7 +53,8 @@ namespace PixelCollector.Networking.Packet
         reader.ReadVector3(),
         reader.ReadVector3(),
         reader.ReadFloat(),
-        reader.ReadFloat()
+        reader.ReadFloat(),
+        reader.ReadInt()
         );
     }
   }

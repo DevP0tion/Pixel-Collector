@@ -4,7 +4,6 @@ namespace PixelCollector.Core.Interface
 {
   public interface IDamageable
   {
-    Team Team { get; }
     /// <param name="damage">대상에게 가하는 피해량입니다.</param>
     /// <param name="sender">공격하는 주체입니다.</param>
     void Damage(float damage, IAttacker sender = null);

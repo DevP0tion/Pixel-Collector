@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7278045974741736115}
+  - component: {fileID: 8350516996288326253}
   - component: {fileID: 5489289390634278150}
   - component: {fileID: 7346161902819190171}
-  - component: {fileID: 8350516996288326253}
   - component: {fileID: 6445595744892102215}
   - component: {fileID: 1943404581121231327}
   m_Layer: 0
@@ -37,6 +37,40 @@ Transform:
   - {fileID: 7102116254943536356}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8350516996288326253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 559432182520426274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73d5848f7c454f0e8f125b3be548584f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMethod: 0
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  <Team>k__BackingField:
+    color: {r: 0, g: 0, b: 0, a: 0}
+    name: 
+    id: 0
+  body: {fileID: 0}
+  <MaxHealth>k__BackingField: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+  speed: 10
+  bullet: {fileID: 0}
+  <Team>k__BackingField:
+    color: {r: 0, g: 0, b: 1, a: 1}
+    name: Player
+    id: 1
 --- !u!50 &5489289390634278150
 Rigidbody2D:
   serializedVersion: 5
@@ -307,36 +341,6 @@ CompositeCollider2D:
   m_OffsetDistance: 0.00005
   m_UseDelaunayMesh: 0
   m_CompositeGameObject: {fileID: 559432182520426274}
---- !u!114 &8350516996288326253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 559432182520426274}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73d5848f7c454f0e8f125b3be548584f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMethod: 0
-  syncDirection: 0
-  syncMode: 0
-  syncInterval: 0
-  team:
-    color: {r: 1, g: 1, b: 1, a: 1}
-    name: None
-    id: 0
-  body: {fileID: 5489289390634278150}
-  <MaxHealth>k__BackingField: 0
-  onHealthChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  onDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  speed: 10
-  bullet: {fileID: 11400000, guid: fac0a43dddaa22e45b5bd0cf4e0744fb, type: 2}
 --- !u!114 &6445595744892102215
 MonoBehaviour:
   m_ObjectHideFlags: 0

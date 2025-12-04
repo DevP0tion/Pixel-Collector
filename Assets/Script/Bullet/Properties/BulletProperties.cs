@@ -19,7 +19,6 @@ namespace PixelCollector.Bullet.Properties
     /// 탄환을 풀링할 원본 프리팹의 어드레서블 경로
     /// </summary>
     public AssetReference bulletPath;
-    public float speed = 1;
     public float damageMultiplier = 1;
     public float lifeTime = 5;
 
@@ -32,8 +31,8 @@ namespace PixelCollector.Bullet.Properties
       return obj;
     }
     
-    public void Shoot(Team team, Vector3 startPosition, Vector3 targetPosition, float damage = 1)
-      => BulletManager.Shoot(new BulletPacket(this, team, startPosition, targetPosition, damage, lifeTime));
+    public void Shoot(Team team, Vector3 startPosition, Vector3 targetPosition, float damage = 1, int ownerID = -1)
+      => BulletManager.Shoot(new BulletPacket(this, team, startPosition, targetPosition, damage * damageMultiplier, lifeTime, ownerID));
 
     #region Initialization
     public static bool Loaded { get; private set; } = false;

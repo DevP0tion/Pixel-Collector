@@ -1,5 +1,6 @@
 using Mirror;
 using PixelCollector.Bullet.Properties;
+using PixelCollector.Core;
 using PixelCollector.Networking.Client;
 using PixelCollector.Networking.Packet;
 using PixelCollector.Networking.Server;
@@ -53,7 +54,8 @@ namespace PixelCollector.Unit.Player
     [Command]
     public void ShootCommand(Vector3 target)
     {
-      bullet.Shoot(Team, transform.position, target, 1);
+      if(NetworkServer.active)
+        bullet.Shoot(team, transform.position, target, 1, connectionToClient.connectionId);
     }
     
     #endregion

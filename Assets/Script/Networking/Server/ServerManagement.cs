@@ -28,7 +28,6 @@ namespace PixelCollector.Networking.Server
     {
       if (Application.platform != RuntimePlatform.WindowsServer)
       {
-        Debug.LogWarning("Server only works on Windows Server");
         Destroy(gameObject);
         return;
       }

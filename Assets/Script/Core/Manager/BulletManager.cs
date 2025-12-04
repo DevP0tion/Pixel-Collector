@@ -22,6 +22,7 @@ namespace PixelCollector.Core.Manager
       bullet.direction = bullet.transform.rotation.ToVector2Direction();
       bullet.damage = packet.damage;
       bullet.lifeTime = packet.lifeTime;
+      bullet.ownerId = packet.ownerId;
     }
 
     public static void Shoot(BulletPacket packet)

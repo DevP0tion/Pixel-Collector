@@ -2,6 +2,8 @@ using System;
 using PixelCollector.Bullet.Properties;
 using PixelCollector.Core;
 using PixelCollector.Core.Interface;
+using PixelCollector.Unit;
+using PixelCollector.Unit.Player;
 using PixelCollector.Util;
 using UnityEngine;
 
@@ -15,6 +17,7 @@ namespace PixelCollector.Bullet
     public float lifeTime = 5f;
     public Vector2 direction;
     public Rigidbody2D body;
+    public int ownerId;
     
     private BulletProperties properties;
     
@@ -33,19 +36,26 @@ namespace PixelCollector.Bullet
 
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
-      Debug.Log("Bullet hit " + other.gameObject.name);
       if (other.TryGetComponent<IDamageable>(out var damageable))
       {
-        if (damageable.Team != Team)
+        if (ownerId != -1 && other.TryGetComponent<PlayerBaseModule>(out var player))
         {
-          Debug.Log("Bullet damaged " + other.gameObject.name);
+          if (player.connectionToClient.connectionId != ownerId)
+          {
+            player.Damage(damage, this);
+            Release();
+            return;
+          }
+        }
+        
+        if (damageable is UnitBaseModule unit && unit.team != Team)
+        {
           damageable.Damage(damage, this);
           Release();
         }
       }
       else if (other.gameObject.layer == LayerMask.NameToLayer("Obstacle"))
       {
-        Debug.Log("Bullet hit obstacle");
         Release();
       }
       
