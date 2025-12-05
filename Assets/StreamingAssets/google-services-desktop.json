@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "164267938388",
+    "project_id": "pixel-server-da7fb",
+    "storage_bucket": "pixel-server-da7fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164267938388:android:547a0d81da5026189953c1",
+        "android_client_info": {
+          "package_name": "com.APlan.pixelCollector"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDJXSKWibe6iUckmUYMLoKVMpwzYU004M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
